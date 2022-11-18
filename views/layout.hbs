@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js"></script>
+    <script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <script src="https://kit.fontawesome.com/6e2345acf0.js" crossorigin="anonymous"></script>
+<!--    <script>window.AFK || document.write('<script src="/javascripts/aframe-keyboard.min.js">\x3C/script>')</script>-->
+    <script src="/javascripts/animationHostpot.js"></script>
+
+
+    <script>
+        AFRAME.registerComponent('json-text-loader', {
+            schema: {},
+            init: function () {
+
+                fetch('http://ec2-54-173-42-155.compute-1.amazonaws.com/api/productos')
+                        // Exito
+                        .then(response => response.json())  // convertir a json
+                        .then(data =>{
+                            for(let i of data){
+                                console.log(i.name);
+                                <!--const bo = new Blob([JSON.stringify(img)]);-->
+                                var info = 'Producto: '+ i.name + '\n' + 'Precio: '+i.price +'$'+ '\n' + 'Descripcion: '+i.description + '\n\n'
+                                var textEntity = document.querySelector('#text');
+                                textEntity.setAttribute("value", info);
+                            }
+
+                        })    //imprimir los datos en la consola
+                        .catch(err => console.log('Solicitud fallida', err)); // Capturar errores
+
+            }
+        });
+    </script>
+
+    <script>
+        var input = ''
+        function updateInput(e) {
+            var code = parseInt(e.detail.code)
+            switch(code) {
+                case 8:
+                    input = input.slice(0, -1)
+                    break
+                case 6:
+                    alert('submitted')
+                    var keyboard = document.querySelector('#keyboard')
+                    document.querySelector('#input').setAttribute('value', input)
+                    document.querySelector('#input').setAttribute('color', 'blue')
+                    keyboard.parentNode.removeChild(keyboard)
+                    return
+                default:
+                    input = input + e.detail.value
+                    break
+            }
+            document.querySelector('#input').setAttribute('value', input + '_')
+        }
+        document.addEventListener('a-keyboard-update', updateInput)
+    </script>
+</head>
+<body>
+{{{body}}}
+</body>
+</html>
